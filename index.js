@@ -44,6 +44,7 @@ async function run() {
         // db all collections
         const userCollection = client.db('SociaLinked').collection('users');
         const postsCollection = client.db('SociaLinked').collection('posts');
+        const commentsCollection = client.db('SociaLinked').collection('comments');
 
 
         app.get('/jwt', async(req, res) => {
@@ -103,6 +104,13 @@ async function run() {
         app.post('/posts', async(req, res) => {
             const post = req.body;
             const result = await postsCollection.insertOne( post );
+            res.send(result);
+        });
+
+        // insert a comment in db
+        app.post('/comments', async(req, res) => {
+            const comment = req.body;
+            const result = await commentsCollection.insertOne( comment );
             res.send(result);
         });
 
