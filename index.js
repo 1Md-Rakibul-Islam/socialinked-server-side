@@ -69,11 +69,11 @@ async function run() {
         // eamil based spicific user data get and send to client side
         app.get('/users', async(req, res) => {
             const email = req.query.email;
-            console.log(email);
+            // console.log(email);
             const filter = { userEmail : email };
-            console.log(filter);
+            // console.log(filter);
             const user = await userCollection.findOne(filter);
-            console.log(user);
+            // console.log(user);
             res.send(user);
         })
 
@@ -100,7 +100,15 @@ async function run() {
             res.send(post);
         })
 
-        // insert a post in db
+        // _id based spicific posts get and send to client side
+        app.get('/comments/:_id', async(req, res) => {
+            const id = req.params._id;
+            const filter = { postId: id };
+            const post = await commentsCollection.find(filter).toArray();
+            res.send(post);
+        })
+
+        // insert a po st in db
         app.post('/posts', async(req, res) => {
             const post = req.body;
             const result = await postsCollection.insertOne( post );
@@ -122,6 +130,35 @@ async function run() {
             res.send(result);
         });
 
+        // insert a user in db
+        app.post('/users', async(req, res) => {
+            const user = req.body;
+            // console.log(user);
+            const result = await userCollection.insertOne( user );
+            res.send(result);
+        });
+
+        // update a user on db
+        app.put('/users/:_id', async(req, res) => {
+            const id = req.params._id
+            const user = req.body;
+            // console.log(user);
+            const filter = { _id: ObjectId(id) };
+            // console.log(user);
+            const updatedDoc = {
+                $set: {
+                    userName: req.body.userName,
+                    userPhoto: req.body.userPhoto,
+                    coverPhoto: req.body.coverPhoto,
+                    educationInstitute: req.body.educationInstitute,
+                    address: req.body.address,
+                    userEmail: req.body.userEmail
+                }
+            }
+            // console.log(user);
+            const result = await userCollection.updateOne( filter, updatedDoc);
+            res.send(result);
+        });
 
 
 
